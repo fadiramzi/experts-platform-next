@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import React from 'react'
+import myAxios from '../lib/my-axios';
 
 export default function login() {
     
@@ -14,19 +15,13 @@ export default function login() {
         // Add your login logic here
 
         try {
-           const response = await fetch('http://localhost:8000/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body:JSON.stringify({email: username, password})
-        });
-         const data = await response.json();
-         localStorage.setItem('expertLoginData', JSON.stringify(data));
-        
-         router.push('/experts');
-        
+            const response = await myAxios.post('/auth/login', { email:username, password });
+            console.log('Login response:', response);
+            const data = response.data;
+            // localStorage.setItem('expertLoginData', JSON.stringify(data));
+
+            router.push('/experts');
+
         } catch (error) {
             console.error('Error during login:', error);
         }

@@ -1,6 +1,7 @@
 
 'use client';
 import React, { useEffect } from 'react'
+import myAxios from '../lib/my-axios';
 
 export default function Experts() {
 
@@ -11,11 +12,11 @@ export default function Experts() {
   console.log("Fetching experts data...");
 
  useEffect(()=>{
-    console.log("useEffect called");
     const callApi = async ()=>{
-        const response = await fetch('https://jsonplaceholder.typicode.com/users');
-        const usersTemp = await response.json();
-        console.log("Fetched users at client side:", usersTemp);
+        const response = await myAxios.get('/users');
+        console.log(response);
+        const usersTemp = response.data.data;
+         console.log("API response:", usersTemp);
         setUsers(usersTemp);
     }
     callApi();
