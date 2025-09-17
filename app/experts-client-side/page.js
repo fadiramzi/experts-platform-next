@@ -1,16 +1,30 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import myAxios from "../lib/my-axios";
 import ExpertsSearch from "../components/experts/experts-search";
 import ExpertsFilter from "../components/experts/experts-filter";
 import Spinner from "../components/spinner";
+import ExpertsPagination from "../components/experts/experts-pagination";
 export default function Experts() {
   const [users, setUsers] = React.useState([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [userType, setUserType] = React.useState("all");
   const [isLoading, setIsLoading] = React.useState(true);
-
   const [sortDir, setSortDir] = React.useState("desc");
+
+  const [pagination,setPagination] = useState({
+    /* "total": 7,
+        "current_page": 1,
+        "per_page": 2,
+        "last_page": 4,
+        "offset": 8 
+        */
+      total:0,
+      current_page:1,
+      per_page:2,
+      last_page:4,
+      offset:0
+  })
 
   console.log("Experts Page started");
 
@@ -20,7 +34,7 @@ export default function Experts() {
   useEffect(() => {
     const callApi = async () => {
       setIsLoading(true);
-      let url = `/users?sortDir=${sortDir}`;
+      let url = `/users?page=${pagination.current_page}&perPage=${pagination.per_page}&sortDir=${sortDir}`;
       if (userType !== "all") {
         url += `&userType=${userType}`;
       }
@@ -28,10 +42,11 @@ export default function Experts() {
       const usersTemp = response.data.data;
       console.log("API response:", usersTemp);
       setUsers(usersTemp);
+      setPagination(response.data.pagination)
       setIsLoading(false);
     };
     callApi();
-  }, [userType, sortDir]);
+  }, [userType, sortDir, pagination.current_page, pagination.per_page]);
   console.log("Fetched users:", users);
 
   console.log("Rendering Experts Page");
@@ -51,6 +66,16 @@ export default function Experts() {
       setSortDir("asc");
     } else setSortDir("desc");
   };
+
+  const onPageChange = (page) => {
+    setPagination(
+      (prev) => ({ ...prev, current_page: page })
+    );
+  }
+  const setPerPage = (perPage) => {
+
+    setPagination((prev) => ({ ...prev, per_page: perPage }))
+  }
   return (
     <div className="bg-gray-900">
       <h2>Experts Page</h2>
@@ -122,6 +147,16 @@ export default function Experts() {
               })}
             </tbody>
           </table>
+         <div className="mt-4">
+           <ExpertsPagination
+           totalPages={pagination.last_page}
+           onPageChange={onPageChange}
+           currentPage={pagination.current_page}
+           lastPage={pagination.last_page}
+           perPage={pagination.per_page}
+           setPerPage={setPerPage}
+           />
+         </div>
         </>
       )}
     </div>
