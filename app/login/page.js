@@ -4,7 +4,7 @@ import React from "react";
 import myAxios from "../lib/my-axios";
 import Image from "next/image";
 
-export default function login() {
+export default function Login() {
   const router = useRouter();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
