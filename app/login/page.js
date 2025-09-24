@@ -4,6 +4,7 @@ import React from "react";
 import myAxios from "../lib/my-axios";
 import Image from "next/image";
 
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0';
 export default function Login() {
   const router = useRouter();
   const [username, setUsername] = React.useState("");
@@ -62,6 +63,7 @@ export default function Login() {
             Login
           </button>
         </form>
+        <div className="text-center text-gray-500 mt-4">Version {APP_VERSION}</div>
       </div>
     </div>
   );
